@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: Vaibhavkm@10
+    url: jdbc:mysql://localhost:3306/db?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming: # JPA Camelcasing support nhi krta h so hum ye isliye likh rahe h taak column name jo maine diya h vo as it is rahe, nameOfBook hee rahe na ki table me name_of_book ho jaaye.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+
+  # Multipart Configuration:-
+  servlet:
+    multipart:   # It enables multipart uploads:-
+      enabled: true
+      file-size-threshold: 1KB # Threshold (Min size of a file)- Kamm se kmm itni size ki honi chahiye..
+      max-file-size: 10MB # Max file size:-
