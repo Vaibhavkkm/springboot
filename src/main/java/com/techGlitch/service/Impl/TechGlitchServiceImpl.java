@@ -34,6 +34,9 @@ public class TechGlitchServiceImpl implements TechGlitchService {
 
     @Autowired
     TechGlitchMasterRepo techGlitchMasterRepo;
+
+    @Autowired
+    DayTimeCondition dayTimeCondition;
     @Autowired
     TechGlitchTDayRepo techGlitchTDayRepo;
     @Autowired
@@ -109,8 +112,7 @@ public class TechGlitchServiceImpl implements TechGlitchService {
             LocalDate formattedIncidentDate = LocalDate.parse(incidentDate, dateFormatter);
             LocalTime formattedGlitchTime = LocalTime.parse(glitchStartTime, timeFormatter);
             log.info("Checking if penalty is applicable or not");
-            Boolean timeUnderRange = DayTimeCondition.isTimeUnderRange(formattedEmailSentDate, formattedIncidentDate, formattedEmailSentTime, formattedGlitchTime);
-            penalty = timeUnderRange;
+            penalty = DayTimeCondition.isTimeUnderRange(formattedEmailSentDate, formattedIncidentDate, formattedEmailSentTime, formattedGlitchTime);
 
             String expectedDateOfSubmissionTDay = DayTimeCondition.timeAfterOneHour(formattedIncidentDate, formattedGlitchTime);
             String expectedDateOfSubmissionTPlsOneDay = DayTimeCondition.dateAfterOneDay(formattedIncidentDate);
