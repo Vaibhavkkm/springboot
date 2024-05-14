@@ -33,17 +33,21 @@ public class TechGlitchMaster {
     @Column(name="REQ_REF_NO")
     private String reqRefNo;
 
+    @Column(name="MEMBER_ID")
+    private Long memberId;
+
     @Column(name="MEMBER_NAME")
     private String memberName;
 
     @Column(name="MEMBER_CODE")
     private String memberCode;
 
-    //For SQL Developer
+    // For SQL Developer we use CLOB
 //    @Lob
 //    @Column(name= "LETTER_SUBJECT", columnDefinition = "CLOB")
 //    private String letterSubject;
 
+    // For MYSQL we use LONGTEXT
     @Lob
     @Column(name= "LETTER_SUBJECT", columnDefinition = "LONGTEXT")
     private String letterSubject;

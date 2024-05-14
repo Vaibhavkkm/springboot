@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -45,7 +46,7 @@ public class TechGlitchTDay {
 	private String emailSentDate;
 
 	@Column(name = "SUBMISSION_DATE_TIME")
-	private LocalDate submissionDate;
+	private LocalDateTime submissionDate;
 
 	@Column(name = "START_TIME")
 	private String startTime;

@@ -1,6 +1,7 @@
 package com.techGlitch.service.Impl;
 
 import com.techGlitch.common.Constants;
+import com.techGlitch.common.docDetails.model.DocData;
 import com.techGlitch.dto.JsonResponseDTO;
 import com.techGlitch.model.MemberDetails;
 import com.techGlitch.model.TechGlitchMaster;
@@ -17,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.event.WindowFocusListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -91,6 +94,10 @@ public class TechGlitchServiceImpl implements TechGlitchService {
 
         String referenceNo= "";
 
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        String formattedDate = localDate.format(dateTimeFormatter);
+
         if(jsonResponseDTO.getRequestType().equals("T_DAY")){
             log.info("Inside T_DAY Request Type");
             TechGlitchTDay.TechGlitchTDayBuilder techGlitchTDayBuilder = null;
@@ -134,10 +141,41 @@ public class TechGlitchServiceImpl implements TechGlitchService {
                    .build();
            techGlitchMasterRepo.save(techGlitchMasterBuilder);
 
+           referenceNo = generateReferenceNumber(techGlitchMasterBuilder.getMemberId(), techGlitchMasterBuilder.getRequestId());
+            techGlitchMasterBuilder.setReqRefNo(referenceNo);
 
+            //---------------------
+
+            TechGlitchTDay techGlitchTDay = TechGlitchTDay.builder()
+                    .name(jsonResponseDTO.getCommonDTO().getName())
+                    .mobNo(jsonResponseDTO.getCommonDTO().getMobNo())
+                    .dateOfIncident(jsonResponseDTO.getCommonDTO().getDateOfIncident())
+                    .emailSentDate(jsonResponseDTO.getCommonDTO().getEmailSentDate())
+                    .endTime(jsonResponseDTO.getCommonDTO().getEndTime())
+                    .startTime(jsonResponseDTO.getCommonDTO().getStartTime())
+                    .submissionDate(LocalDateTime.now())
+                    .build();
+
+            List<MultipartFile> files = fileUplod(glitchFile, techGlitchMasterBuilder);
 
 
         }
+        return null;
+
+    }
+
+    @Transactional
+    private List<MultipartFile> fileUplod(MultipartFile glitchFile, TechGlitchMaster techGlitchMaster){
+
+        if(glitchFile != null){
+            log.info("glitchFile is  not Null");
+            int docIndex = glitchFile.getOriginalFilename().lastIndexOf('.');
+            String extension = glitchFile.getOriginalFilename().substring(docIndex + 1);
+
+            String fileName = techGlitchMaster.getMemberCode() + "_GLITCH_FILE_" + extension;
+//            DocData docData =
+        }
+
         return null;
 
     }
