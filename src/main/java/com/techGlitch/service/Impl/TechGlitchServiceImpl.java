@@ -169,10 +169,7 @@ public class TechGlitchServiceImpl implements TechGlitchService {
             techGlitchTDayRepo.save(techGlitchTDay);
 
 
-
             //Excel Creation Code
-
-
             TechGlitchClassExcelDTO techGlitchClassExcelDTO = TechGlitchClassExcelDTO.builder()
 
                     .memberCode(jsonResponseDTO.getCommonDTO().getMemberCode())
@@ -193,9 +190,6 @@ public class TechGlitchServiceImpl implements TechGlitchService {
 //                    "Member Code, Member Name, Name, Mobile Number, Date of Incident, Start Date, End Date"));
 
 //Will need to fix MockMultipartFile Error
-
-
-
 
         }
         return null;
