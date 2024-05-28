@@ -10,5 +10,5 @@ public interface TechGlitchService {
 
     TechGlitchResponse submitData(Long memberId, String reqRefId,
                                   String userName, JsonResponseDTO jsonResponseDTO,
-                                  MultipartFile glitchFile);
+                                  MultipartFile glitchFile) throws NoSuchFieldException, ClassNotFoundException;
 }

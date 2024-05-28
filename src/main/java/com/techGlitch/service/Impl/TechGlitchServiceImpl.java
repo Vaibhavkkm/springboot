@@ -3,6 +3,10 @@ package com.techGlitch.service.Impl;
 import com.techGlitch.common.Constants;
 import com.techGlitch.common.docDetails.model.DocData;
 import com.techGlitch.dto.JsonResponseDTO;
+import com.techGlitch.utils.GenerateExcelFile;
+import org.apache.tomcat.util.bcel.Const;
+//import org.springframework.mock.web.MockMultipartFile;
+import com.techGlitch.dto.TechGlitchClassExcelDTO;
 import com.techGlitch.model.MemberDetails;
 import com.techGlitch.model.TechGlitchMaster;
 import com.techGlitch.model.TechGlitchTDay;
@@ -22,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -90,9 +95,11 @@ public class TechGlitchServiceImpl implements TechGlitchService {
     @Transactional
     public TechGlitchResponse submitData(Long memberId, String reqRefId,
                                          String userName, JsonResponseDTO jsonResponseDTO,
-                                         MultipartFile glitchFile){
+                                         MultipartFile glitchFile) throws NoSuchFieldException, ClassNotFoundException {
 
         String referenceNo= "";
+
+        GenerateExcelFile generateExcelFile = new GenerateExcelFile();
 
         LocalDate localDate = LocalDate.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
@@ -156,7 +163,38 @@ public class TechGlitchServiceImpl implements TechGlitchService {
                     .submissionDate(LocalDateTime.now())
                     .build();
 
-            List<MultipartFile> files = fileUplod(glitchFile, techGlitchMasterBuilder);
+            List<MultipartFile> files = fileUpload(glitchFile, techGlitchMasterBuilder);
+            techGlitchMasterBuilder.setTechGlitchTDay(techGlitchTDay);
+            techGlitchTDay.setTechGlitchMaster(techGlitchMasterBuilder);
+            techGlitchTDayRepo.save(techGlitchTDay);
+
+
+
+            //Excel Creation Code
+
+
+            TechGlitchClassExcelDTO techGlitchClassExcelDTO = TechGlitchClassExcelDTO.builder()
+
+                    .memberCode(jsonResponseDTO.getCommonDTO().getMemberCode())
+                    .memberName(jsonResponseDTO.getCommonDTO().getMemberName())
+                    .name(jsonResponseDTO.getCommonDTO().getName())
+                    .mobNo(jsonResponseDTO.getCommonDTO().getMobNo())
+                    .dateOfIncident(jsonResponseDTO.getCommonDTO().getDateOfIncident())
+                    .startTime(jsonResponseDTO.getCommonDTO().getStartTime())
+                    .endTime(jsonResponseDTO.getCommonDTO().getEndTime())
+
+                    .build();
+            List<TechGlitchClassExcelDTO> list = new ArrayList<>();
+            list.add(techGlitchClassExcelDTO);
+
+//            MultipartFile parsedExcelFile = new MockMultipartFile(Constants.EXCEL_FILE_NAME + formattedDate +".xlsx", Constants.EXCEL_FILE_NAME + formattedDate +".xlsx",
+//                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", generateExcelFile.generateFileForExcelExportCommon(list,
+//                    "com/techGlitch/dto/TechGlitchClassExcelDTO", "TECH_GLITCH_DATA",
+//                    "Member Code, Member Name, Name, Mobile Number, Date of Incident, Start Date, End Date"));
+
+//Will need to fix MockMultipartFile Error
+
+
 
 
         }
@@ -165,7 +203,7 @@ public class TechGlitchServiceImpl implements TechGlitchService {
     }
 
     @Transactional
-    private List<MultipartFile> fileUplod(MultipartFile glitchFile, TechGlitchMaster techGlitchMaster){
+    private List<MultipartFile> fileUpload(MultipartFile glitchFile, TechGlitchMaster techGlitchMaster){
 
         if(glitchFile != null){
             log.info("glitchFile is  not Null");
@@ -173,12 +211,10 @@ public class TechGlitchServiceImpl implements TechGlitchService {
             String extension = glitchFile.getOriginalFilename().substring(docIndex + 1);
 
             String fileName = techGlitchMaster.getMemberCode() + "_GLITCH_FILE_" + extension;
-//            DocData docData =
         }
-
         return null;
-
     }
+
 
 
 
